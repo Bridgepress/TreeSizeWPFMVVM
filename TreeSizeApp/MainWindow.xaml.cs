@@ -16,9 +16,7 @@ using TreeSize.Handler;
 
 namespace TreeSizeApp
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         private FormRender _formRender;

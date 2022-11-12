@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace TreeSize.Handler
         public long? TotalSize { get; set; }
         public long? FreeSpace { get; set; }
         public DateTime? LastWriteTime { get; set; }
+        public DirectoryInfo DirectoryInforamtion { get; set; }
     }
 }

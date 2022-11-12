@@ -14,6 +14,7 @@ namespace TreeSize.Handler
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
             List<DriveInfo> newAllDrives = new List<DriveInfo>();
+
             foreach (var driveInfo in allDrives)
             {
                 if (driveInfo.IsReady)
@@ -21,12 +22,13 @@ namespace TreeSize.Handler
                     newAllDrives.Add(driveInfo);
                 }
             }
+
             return newAllDrives;
         }
 
         public static List<DirectoryInfo> GetDirectories(String path)
         {
-            if (path == "" || path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
@@ -39,7 +41,7 @@ namespace TreeSize.Handler
 
         public static List<FileInfo> GetFiles(String path)
         {
-            if (path == "" || path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
@@ -54,40 +56,45 @@ namespace TreeSize.Handler
         {
             DirectoryContentRepository newDirectoryContentRepository = new DirectoryContentRepository();
             DirectoryContent directoryContent;
-            if (path == "" || path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 var driveList = GetDrives();
                 newDirectoryContentRepository = new DirectoryContentRepository();
+
                 foreach (var driveInfo in driveList)
                 {
                     directoryContent = new DirectoryContent();
                     directoryContent.Name = driveInfo.Name;
                     directoryContent.TotalSize = driveInfo.TotalSize;
                     directoryContent.FreeSpace = driveInfo.AvailableFreeSpace;
-                    directoryContent.Icon = new BitmapImage(new Uri(@"\FlashUSBSSSSuuuurrr\FileManagerWPF\FileManagerWPF\icons\drive.png", UriKind.Relative));
+                    directoryContent.Icon = new BitmapImage(new Uri(@"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\drive.png", UriKind.Relative));
                     newDirectoryContentRepository.DirectoryContent.Add(directoryContent);
                 }
+
                 return newDirectoryContentRepository;
             }
             var directoriesList = GetDirectories(path);
+
             foreach (var directoryInfo in directoriesList)
             {
                 directoryContent = new DirectoryContent();
                 directoryContent.Name = directoryInfo.Name;
                 directoryContent.LastWriteTime = directoryInfo.LastWriteTime;
-                directoryContent.Icon = new BitmapImage(new Uri(@"\FlashUSBSSSSuuuurrr\FileManagerWPF\FileManagerWPF\icons\folder.png", UriKind.Relative));
+                directoryContent.Icon = new BitmapImage(new Uri(@"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png", UriKind.Relative));
                 newDirectoryContentRepository.DirectoryContent.Add(directoryContent);
             }
+
             if (full)
             {
                 var filesList = GetFiles(path);
+
                 foreach (var file in filesList)
                 {
                     directoryContent = new DirectoryContent();
                     directoryContent.Name = file.Name;
                     directoryContent.LastWriteTime = file.LastWriteTime;
                     directoryContent.TotalSize = file.Length;
-                    directoryContent.Icon = new BitmapImage(new Uri(@"\FlashUSBSSSSuuuurrr\FileManagerWPF\FileManagerWPF\icons\file.png", UriKind.Relative));
+                    directoryContent.Icon = new BitmapImage(new Uri(@"\TreeSizeApp\TreeSizeApp\icons\file.png", UriKind.Relative));
                     newDirectoryContentRepository.DirectoryContent.Add(directoryContent);
                 }
             }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using TreeSize.Handler;
+using System.Windows.Media.Imaging;
 
 namespace TreeSizeApp
 {
@@ -18,6 +19,7 @@ namespace TreeSizeApp
         private TreeView _treeView;
         private TextBox _textBox;
         private MainWindow _mainWindow;
+        private DirectorySize _directorySize = new DirectorySize();
 
         public FormRender(ListView listView, TreeView treeView, TextBox textBox, MainWindow mainWindow)
         {
@@ -50,11 +52,7 @@ namespace TreeSizeApp
             {
                 if (path != "")
                 {
-                    if (Path.HasExtension(path))
-                    {
-                        //start process
-                    }
-                    else
+                    if (!Path.HasExtension(path))
                     {
                         PathToFile = path;
                         ContentRepository = PathProcess.GetDirectoryContentRepository(PathToFile, true);
@@ -73,11 +71,7 @@ namespace TreeSizeApp
             {
                 if (relativePath != "")
                 {
-                    if (Path.HasExtension(relativePath))
-                    {
-                        //start process
-                    }
-                    else
+                    if (!Path.HasExtension(relativePath))
                     {
                         if (PathToFile[PathToFile.Length - 1] != '\\')
                         {
@@ -96,16 +90,6 @@ namespace TreeSizeApp
 
         private void RefreshData()
         {
-            // показать, почему не появляются иконки
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-
-            ///////////
             _listView.ItemsSource = ContentRepository.DirectoryContent;
             var view = _listView.View;
             if (view == _mainWindow.FindResource("GridView"))
@@ -121,6 +105,7 @@ namespace TreeSizeApp
             {
                 List<String> pathes = new List<string>();
                 pathes.Add(PathToFile);
+
                 while (true)
                 {
                     string buf;
@@ -131,8 +116,10 @@ namespace TreeSizeApp
                     }
                     pathes.Add(buf);
                 }
+
                 pathes.Reverse();
                 ItemCollection treeItemCollection = _treeView.Items;
+
                 foreach (var path in pathes)
                 {
                     var path1 = Path.GetFileName(path);
@@ -140,6 +127,7 @@ namespace TreeSizeApp
                     {
                         path1 = path;
                     }
+
                     foreach (var treeViewItem in treeItemCollection)
                     {
                         if (((TreeViewItem)treeViewItem).Tag is DirectoryInfo)
@@ -192,7 +180,7 @@ namespace TreeSizeApp
             }
             else
             {
-                dir = (DirectoryInfo)item.Tag;
+                dir = (item.Tag as DirectoryContent).DirectoryInforamtion;
             }
 
             GoTo(dir.FullName);
@@ -202,13 +190,6 @@ namespace TreeSizeApp
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             TreeViewItem item = (TreeViewItem)e.OriginalSource;
-
-            // Perform a refresh every time item is expanded.
-            // Optionally, you could perform this only the first
-            // time, when the placeholder is found (less refreshes),
-            // every time an item is selected (more refreshes)
-            // or when a message is received by the FileSystemWatcher
-            // (intelligent refreshes, requiring the most overhead).
             item.Items.Clear();
 
             DirectoryInfo dir;
@@ -219,15 +200,28 @@ namespace TreeSizeApp
             }
             else
             {
-                dir = (DirectoryInfo)item.Tag;
+                dir = (item.Tag as DirectoryContent).DirectoryInforamtion;
             }
-
             try
             {
                 foreach (DirectoryInfo subDir in dir.GetDirectories())
                 {
+                    DirectoryContent directoryContent = new DirectoryContent
+                    {
+                        DirectoryInforamtion = subDir,
+                        Name = subDir.Name,
+                        Icon = new BitmapImage(new Uri(@"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png", UriKind.Relative))
+                };
+                    try
+                    {
+                        directoryContent.TotalSize = _directorySize.Size(subDir);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        directoryContent.TotalSize = 0;
+                    }
                     TreeViewItem newItem = new TreeViewItem();
-                    newItem.Tag = subDir;
+                    newItem.Tag = directoryContent;
                     newItem.Header = subDir.ToString();
                     newItem.Items.Add("*");
                     item.Items.Add(newItem);
@@ -235,9 +229,6 @@ namespace TreeSizeApp
             }
             catch
             {
-                // An exception could be thrown in this code if you don't
-                // have sufficient security permissions for a file or directory.
-                // You can catch and then ignore this exception.
             }
         }
 
@@ -245,6 +236,7 @@ namespace TreeSizeApp
         {
             var gridView = _mainWindow.FindResource("GridView");
             ((GridView)gridView).Columns.Clear();
+
             foreach (var directoryContent in _directoryContentRepository.DirectoryContent)
             {
                 if (directoryContent.Icon != null)
@@ -294,6 +286,7 @@ namespace TreeSizeApp
                     return false;
                 }
             }
+            
             return true;
         }
 

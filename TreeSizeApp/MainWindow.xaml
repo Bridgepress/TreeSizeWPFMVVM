@@ -50,7 +50,7 @@
             </GridViewColumn.CellTemplate>
         </GridViewColumn>
 
-        <!--<local:TileView x:Key="TileView">
+        <local:TileView x:Key="TileView">
             <local:TileView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
@@ -59,7 +59,7 @@
                     </StackPanel>
                 </DataTemplate>
             </local:TileView.ItemTemplate>
-        </local:TileView>-->
+        </local:TileView>
 
         <GridView x:Key="GridView">
             <GridViewColumn Header="Name">
@@ -90,23 +90,39 @@
 
         <ToolBar Grid.Row="0" Grid.ColumnSpan="2">
             <TextBox Name="TextBox" MinWidth="200" MaxLength="500" MaxLines="1" KeyUp="TextBox_KeyUp"/>
-            <Separator></Separator>
-            <Separator></Separator>
-            <CheckBox IsChecked="False" Visibility="Hidden">Grouping</CheckBox>
         </ToolBar>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="61*"></ColumnDefinition>
+                <ColumnDefinition Width="93*"/>
+                <ColumnDefinition Width="113*"/>
+                <ColumnDefinition Width="130*"></ColumnDefinition>
+                <ColumnDefinition Width="403*"/>
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Column="0" Name="TreeView">
-                <!--<TreeView.ItemTemplate>
-                    <DataTemplate DataType="local:DirectoryContent">
-                        <TextBlock Text="{Binding Name}"></TextBlock>
-                    </DataTemplate>
-                </TreeView.ItemTemplate>-->
+
+            <!--<TreeView BorderThickness="0" ItemsSource="{Binding processes}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding subProcesses}" >
+                        <Grid>
+
+                            //Number of columns
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            //Controls to use in the treeview grid
+                            <TextBlock Text="{Binding procesId}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding procesName}" Grid.Column="1"/>
+
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>-->
+
+            <TreeView Grid.Column="0" Name="TreeView" Grid.ColumnSpan="3">
             </TreeView>
-            <ListView Grid.Column="1" Name="ListView" View="{StaticResource GridView}" MouseDoubleClick="ListView_MouseDoubleClick" ></ListView>
+            <ListView Grid.Column="3" Name="ListView" View="{StaticResource GridView}" MouseDoubleClick="ListView_MouseDoubleClick" Grid.ColumnSpan="2" ></ListView>
         </Grid>
     </Grid>
 </Window>
