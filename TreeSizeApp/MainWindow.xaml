@@ -7,31 +7,7 @@
          xmlns:local2="clr-namespace:TreeSize.Handler;assembly=TreeSize.Handler"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <!--<Grid>
-        <TreeView x:Name="treeView1">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}" DataType="{x:Type local2:TreeViewRenderer}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                    
-                        <StackPanel Orientation="Horizontal" Grid.Column="0">
-                            <Image Height="20" Width="20" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Icon}"/>
-                            <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
 
-                        <TextBlock Text="{Binding TotalSize}" Grid.Column="1"/>
-                    </Grid>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-            
-        </TreeView>
-    </Grid>-->
-
-    
-    
     <DockPanel>
         <DataGrid Height="25" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" AutoGenerateColumns="False" Margin="0,0,0,0">
             <DataGrid.Columns>
@@ -40,7 +16,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TreeView  x:Name="treeView1" DockPanel.Dock="Top">
+        <TreeView  x:Name="treeView" DockPanel.Dock="Top">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
                     <Grid  HorizontalAlignment="Stretch">
