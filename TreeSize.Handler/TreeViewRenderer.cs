@@ -37,15 +37,16 @@ namespace TreeSize.Handler
                 Node disk = new Node
                 {
                     Name = drive.Name,
-                    TotalSize = drive.TotalSize,
                     FreeSpace = drive.TotalFreeSpace,
                     Icon = @"C:\Users\sasha\OneDrive - ITSTEP\Программирование\WPF\TreeSizeApp\TreeSizeApp\icons\drive.png"
                 };
+                disk.CountFoldersAndBytesAndFiles.Bytes = drive.TotalSize;
                 Nodes.Add(disk);
 
                 foreach (DirectoryInfo directory in drive.RootDirectory.GetDirectories()
                     .Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
                 {
+                    disk.CountFoldersAndBytesAndFiles.Folders++;
                     Task.Run(new Action(() =>
                     {
                         Node folder = new Node()
@@ -55,12 +56,13 @@ namespace TreeSize.Handler
                         };
                         try
                         {
-                            Task<long?> task = Task<long?>.Factory.StartNew(() => LoadDirectories(directory, folder, _treeView, Nodes));
-                            folder.TotalSize = task.Result;
+                            folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _treeView, Nodes);
+                            disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                            disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         }
                         catch (Exception)
                         {
-                            folder.TotalSize = 0;
+                            folder.CountFoldersAndBytesAndFiles.Bytes += 0;
                         }
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -75,43 +77,43 @@ namespace TreeSize.Handler
                     Node file = new Node
                     {
                         Name = fi.Name,
-                        TotalSize = fi.Length,
                         Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\file.png"
                     };
+                    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
+                    disk.CountFoldersAndBytesAndFiles.Files++;
                     disk.Nodes.Add(file);
                 }
             }
         }
 
-        private long? LoadDirectories(DirectoryInfo directory, Node node, TreeView treeView, ObservableCollection<Node> root)
+        private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, TreeView treeView, ObservableCollection<Node> root)
         {
-            long? size = 0;
+            CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
             try
             {
                 foreach (DirectoryInfo di in directory.GetDirectories().Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
                 {
-                    Task.Run(new Action(() =>
+                    foldersAndBytesAndFilesInFolder.Folders++;
+                    Node folder = new Node()
                     {
-                        Node folder = new Node()
-                        {
-                            Name = di.Name,
-                            Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png"
-                        };
-                        try
-                        {
-                            folder.TotalSize = LoadDirectories(di, folder, treeView, root);
-                        }
-                        catch (Exception)
-                        {
-                            folder.TotalSize = 0;
-                        }
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            node.Nodes.Add(folder);
-                            node.TotalSize += folder.TotalSize;
-                        });
-                        
-                    }));
+                        Name = di.Name,
+                        Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png"
+                    };
+                    try
+                    {
+                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(di, folder, treeView, root);
+                        foldersAndBytesAndFilesInFolder.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
+                        foldersAndBytesAndFilesInFolder.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
+                        foldersAndBytesAndFilesInFolder.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                    }
+                    catch (Exception)
+                    {
+                        folder.CountFoldersAndBytesAndFiles.Bytes += 0;
+                    }
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        node.Nodes.Add(folder);
+                    });
                 }
 
                 foreach (FileInfo fi in directory.GetFiles())
@@ -119,18 +121,19 @@ namespace TreeSize.Handler
                     Node file = new Node
                     {
                         Name = fi.Name,
-                        TotalSize = fi.Length,
                         Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\file.png"
                     };
+                    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
+                    foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
+                    foldersAndBytesAndFilesInFolder.Files++;
                     node.Nodes.Add(file);
-                    size += fi.Length;
                 }
             }
             catch (UnauthorizedAccessException)
             {
             }
 
-            return size;
+            return foldersAndBytesAndFilesInFolder;
         }
 
         private List<DriveInfo> GetDrives()

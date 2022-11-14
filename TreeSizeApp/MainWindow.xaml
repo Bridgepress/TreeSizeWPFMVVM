@@ -13,6 +13,8 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Width="200" Header="Name" x:Name="col0"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding TotalSize}" Width="200" Header="Total Size" x:Name="col1"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding countFoldersAndBytesAndFiles.Files}" Width="100" Header="Files" x:Name="col2"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding countFoldersAndBytesAndFiles.Folders}" Width="100" Header="Folders" x:Name="col3"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -23,12 +25,16 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"></ColumnDefinition>
                             <ColumnDefinition Width="200" ></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Column="0"  VerticalAlignment="Center">
                             <Image Height="20" Width="20" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Icon}"/>
                             <TextBlock Text="{Binding Name}" />
                         </StackPanel>
-                        <TextBlock  Grid.Column="1" Text="{Binding TotalSize}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                        <TextBlock  Grid.Column="1" Text="{Binding GetSize}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                        <TextBlock  Grid.Column="2" Text="{Binding CountFoldersAndBytesAndFiles.Files}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                        <TextBlock  Grid.Column="3" Text="{Binding CountFoldersAndBytesAndFiles.Folders}"  VerticalAlignment="Center" Margin="50 0 0 0" />
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
