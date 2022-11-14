@@ -4,125 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TreeSizeApp"
+         xmlns:local2="clr-namespace:TreeSize.Handler;assembly=TreeSize.Handler"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
+    <!--<Grid>
+        <TreeView x:Name="treeView1">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}" DataType="{x:Type local2:TreeViewRenderer}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    
+                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                            <Image Height="20" Width="20" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Icon}"/>
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
 
-        <GridViewColumn x:Key="DataTemplateForIcon" Header="Icon">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding Path=Icon}" Stretch="UniformToFill" MaxHeight="25" MaxWidth="25"/>
-                    </StackPanel>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
+                        <TextBlock Text="{Binding TotalSize}" Grid.Column="1"/>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            
+        </TreeView>
+    </Grid>-->
 
-        <GridViewColumn x:Key="DataTemplateForName" Header="Name">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=Name}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
+    
+    
+    <DockPanel>
+        <DataGrid Height="25" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" AutoGenerateColumns="False" Margin="0,0,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" Width="200" Header="Name" x:Name="col0"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding TotalSize}" Width="200" Header="Total Size" x:Name="col1"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <GridViewColumn x:Key="DataTemplateForFreeSpace" Header="Free space">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=FreeSpace}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
-
-        <GridViewColumn x:Key="DataTemplateForTotalSize" Header="Total size">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=TotalSize}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
-
-        <GridViewColumn x:Key="DataTemplateForLastWriteTime" Header="Last write time">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=LastWriteTime}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
-
-        <local:TileView x:Key="TileView">
-            <local:TileView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <Image Source="{Binding Path=Icon}" Stretch="UniformToFill" MaxHeight="50" MaxWidth="50"/>
-                        <TextBlock Text="{Binding Path=Name}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </local:TileView.ItemTemplate>
-        </local:TileView>
-
-        <GridView x:Key="GridView">
-            <GridViewColumn Header="Name">
-                <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=Name}"/>
-                    </DataTemplate>
-                </GridViewColumn.CellTemplate>
-            </GridViewColumn>
-        </GridView>
-
-        <DataTemplate x:Key="DataTemplateTreeViewItemHeader" DataType="local:DirectoryContent">
-            <StackPanel>
-                <Image Source="{Binding Path=Icon}" Stretch="UniformToFill" MaxHeight="10" MaxWidth="10"/>
-                <TextBlock Text="{Binding Path=Name}"/>
-            </StackPanel>
-        </DataTemplate>
-    </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="333*"/>
-            <ColumnDefinition Width="184*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-
-        <ToolBar Grid.Row="0" Grid.ColumnSpan="2">
-            <TextBox Name="TextBox" MinWidth="200" MaxLength="500" MaxLines="1" KeyUp="TextBox_KeyUp"/>
-        </ToolBar>
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="61*"></ColumnDefinition>
-                <ColumnDefinition Width="93*"/>
-                <ColumnDefinition Width="113*"/>
-                <ColumnDefinition Width="130*"></ColumnDefinition>
-                <ColumnDefinition Width="403*"/>
-            </Grid.ColumnDefinitions>
-
-            <!--<TreeView BorderThickness="0" ItemsSource="{Binding processes}">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding subProcesses}" >
-                        <Grid>
-
-                            //Number of columns
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-
-                            //Controls to use in the treeview grid
-                            <TextBlock Text="{Binding procesId}" Grid.Column="0"/>
-                            <TextBlock Text="{Binding procesName}" Grid.Column="1"/>
-
-                        </Grid>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>-->
-
-            <TreeView Grid.Column="0" Name="TreeView" Grid.ColumnSpan="3">
-            </TreeView>
-            <ListView Grid.Column="3" Name="ListView" View="{StaticResource GridView}" MouseDoubleClick="ListView_MouseDoubleClick" Grid.ColumnSpan="2" ></ListView>
-        </Grid>
-    </Grid>
+        <TreeView  x:Name="treeView1" DockPanel.Dock="Top">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
+                    <Grid  HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0"  VerticalAlignment="Center">
+                            <Image Height="20" Width="20" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Icon}"/>
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                        <TextBlock  Grid.Column="1" Text="{Binding TotalSize}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </DockPanel>
+    
+    
+    
 </Window>

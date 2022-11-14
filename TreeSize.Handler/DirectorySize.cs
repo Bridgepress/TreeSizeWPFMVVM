@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,24 +8,27 @@ namespace TreeSize.Handler
 {
     public class DirectorySize
     {
-        public long Size(DirectoryInfo directory)
+        public string GetSize(long size)
         {
-            long size = 0;
-            FileInfo[] fis = directory.GetFiles();
-
-            foreach (FileInfo fi in fis)
+            string postfix = "Bytes";
+            long result = size;
+            if (size >= 1073741824)//more than 1 GB
             {
-                size += fi.Length;
+                result = size / 1073741824;
+                postfix = "GB";
+            }
+            else if (size >= 1048576)//more that 1 MB
+            {
+                result = size / 1048576;
+                postfix = "MB";
+            }
+            else if (size >= 1024)//more that 1 KB
+            {
+                result = size / 1024;
+                postfix = "KB";
             }
 
-            DirectoryInfo[] dis = directory.GetDirectories();
-
-            foreach (DirectoryInfo di in dis)
-            {
-                size += Size(di);
-            }
-
-            return size;
+            return result.ToString("F1") + " " + postfix;
         }
     }
 }
