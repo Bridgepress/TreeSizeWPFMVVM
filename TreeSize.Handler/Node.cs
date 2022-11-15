@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace TreeSize.Handler
 {
     public class Node
     {
-
         public string? Icon { get; set; }
         public string? Name { get; set; }
         public CountFoldersAndBytesAndFiles CountFoldersAndBytesAndFiles { get; set; } = new CountFoldersAndBytesAndFiles();

@@ -5,18 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace TreeSize.Handler
 {
     public class TreeViewRenderer
     {
-        public ObservableCollection<Node> _nodes { get; set; }
-
         public ObservableCollection<Node> RefreshNodes()
         {
-            _nodes = new ObservableCollection<Node>();
+            ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
 
             foreach (DriveInfo drive in GetDrives())
             {
@@ -139,7 +135,5 @@ namespace TreeSize.Handler
 
             return newAllDrives;
         }
-
-
     }
 }
