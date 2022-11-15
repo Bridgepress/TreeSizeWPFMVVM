@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using TreeSize.Handler;
+using TreeSizeApp.ViewModels;
 
 namespace TreeSizeApp
 {
@@ -10,11 +11,10 @@ namespace TreeSizeApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        DispatcherTimer dispatcherTimer = new DispatcherTimer();
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new TreeViewRenderer(treeView);
+            DataContext = new ApplicationViewModel(treeView);
         }
     }
 }

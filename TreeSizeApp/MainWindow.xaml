@@ -18,7 +18,12 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TreeView  x:Name="treeView" DockPanel.Dock="Top">
+        <TreeView  x:Name="treeView" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                </Style>
+            </TreeView.Resources>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
                     <Grid  HorizontalAlignment="Stretch">

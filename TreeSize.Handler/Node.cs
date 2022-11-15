@@ -14,6 +14,8 @@ namespace TreeSize.Handler
         public CountFoldersAndBytesAndFiles CountFoldersAndBytesAndFiles { get; set; } = new CountFoldersAndBytesAndFiles();
         public long? FreeSpace { get; set; }
         public DateTime? LastWriteTime { get; set; }
+        public ObservableCollection<Node> Nodes { get; set; }
+        public bool IsSelected { get; set; }
         public string GetSize
         {
             get
@@ -39,7 +41,6 @@ namespace TreeSize.Handler
                 return result.ToString("F1") + " " + postfix;
             }
         }
-        public ObservableCollection<Node> Nodes { get; set; }
 
         public Node()
         {

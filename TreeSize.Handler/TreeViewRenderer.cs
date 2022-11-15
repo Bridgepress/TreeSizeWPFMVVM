@@ -12,25 +12,11 @@ namespace TreeSize.Handler
 {
     public class TreeViewRenderer
     {
-        DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        public ObservableCollection<Node> Nodes { get; set; }
-        private TreeView _treeView = new TreeView();
+        public ObservableCollection<Node> _nodes { get; set; }
 
-
-        public TreeViewRenderer(TreeView treeView)
+        public ObservableCollection<Node> RefreshNodes()
         {
-            _treeView = treeView;
-            RefreshNodes();
-            _treeView.ItemsSource = Nodes;
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 2);
-            dispatcherTimer.Start();
-        }
-
-        private void RefreshNodes()
-        {
-            _treeView.Items.Clear();
-            Nodes = new ObservableCollection<Node>();
+            _nodes = new ObservableCollection<Node>();
 
             foreach (DriveInfo drive in GetDrives())
             {
@@ -41,7 +27,7 @@ namespace TreeSize.Handler
                     Icon = @"C:\Users\sasha\OneDrive - ITSTEP\Программирование\WPF\TreeSizeApp\TreeSizeApp\icons\drive.png"
                 };
                 disk.CountFoldersAndBytesAndFiles.Bytes = drive.TotalSize;
-                Nodes.Add(disk);
+                _nodes.Add(disk);
 
                 foreach (DirectoryInfo directory in drive.RootDirectory.GetDirectories()
                     .Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
@@ -56,7 +42,7 @@ namespace TreeSize.Handler
                         };
                         try
                         {
-                            folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _treeView, Nodes);
+                            folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
                             disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
                             disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         }
@@ -84,9 +70,11 @@ namespace TreeSize.Handler
                     disk.Nodes.Add(file);
                 }
             }
+
+            return _nodes;
         }
 
-        private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, TreeView treeView, ObservableCollection<Node> root)
+        private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
         {
             CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
             try
@@ -101,7 +89,7 @@ namespace TreeSize.Handler
                     };
                     try
                     {
-                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(di, folder, treeView, root);
+                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(di, folder, root);
                         foldersAndBytesAndFilesInFolder.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         foldersAndBytesAndFilesInFolder.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
                         foldersAndBytesAndFilesInFolder.Files += folder.CountFoldersAndBytesAndFiles.Files;
@@ -152,9 +140,6 @@ namespace TreeSize.Handler
             return newAllDrives;
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            _treeView.ItemsSource = Nodes;
-        }
+
     }
 }
