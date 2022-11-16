@@ -12,6 +12,7 @@ namespace TreeSize.Handler
         public DateTime? LastWriteTime { get; set; }
         public ObservableCollection<Node> Nodes { get; set; }
         public bool IsSelected { get; set; }
+        public bool IsExpanded { get; set; }
         public string GetSize
         {
             get

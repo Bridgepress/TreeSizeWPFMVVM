@@ -19,11 +19,22 @@
         </DataGrid>
 
         <TreeView  x:Name="treeView" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}">
-            <TreeView.Resources>
+            <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="BorderThickness" Value="4 0 0 1"/>
+                            <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                            <Setter Property="BorderThickness" Value="4 0 0 1 "/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
-            </TreeView.Resources>
+            </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
                     <Grid  HorizontalAlignment="Stretch">
@@ -45,7 +56,4 @@
             </TreeView.ItemTemplate>
         </TreeView>
     </DockPanel>
-    
-    
-    
 </Window>
