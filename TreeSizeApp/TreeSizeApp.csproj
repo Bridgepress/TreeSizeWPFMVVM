@@ -9,10 +9,14 @@
 
   <ItemGroup>
     <None Remove="icons\drive.png" />
+    <None Remove="icons\file.png" />
+    <None Remove="icons\folder.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="icons\drive.png" />
+    <Resource Include="icons\drive.png" />
+    <Resource Include="icons\file.png" />
+    <Resource Include="icons\folder.png" />
   </ItemGroup>
 
   <ItemGroup>

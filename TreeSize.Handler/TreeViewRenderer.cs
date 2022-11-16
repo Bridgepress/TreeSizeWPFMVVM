@@ -20,7 +20,7 @@ namespace TreeSize.Handler
                 {
                     Name = drive.Name,
                     FreeSpace = drive.TotalFreeSpace,
-                    Icon = @"C:\Users\sasha\OneDrive - ITSTEP\Программирование\WPF\TreeSizeApp\TreeSizeApp\icons\drive.png"
+                    Icon = @"/icons/drive.png"
                 };
                 disk.CountFoldersAndBytesAndFiles.Bytes = drive.TotalSize;
                 _nodes.Add(disk);
@@ -34,7 +34,7 @@ namespace TreeSize.Handler
                         Node folder = new Node()
                         {
                             Name = directory.Name,
-                            Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png"
+                            Icon = @"/icons/folder.png"
                         };
                         try
                         {
@@ -59,7 +59,7 @@ namespace TreeSize.Handler
                     Node file = new Node
                     {
                         Name = fi.Name,
-                        Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\file.png"
+                        Icon = @"/icons/file.png"
                     };
                     file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
                     disk.CountFoldersAndBytesAndFiles.Files++;
@@ -81,7 +81,7 @@ namespace TreeSize.Handler
                     Node folder = new Node()
                     {
                         Name = di.Name,
-                        Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\folder.png"
+                        Icon = @"/icons/folder.png"
                     };
                     try
                     {
@@ -105,7 +105,7 @@ namespace TreeSize.Handler
                     Node file = new Node
                     {
                         Name = fi.Name,
-                        Icon = @"C:\Users\sasha\source\repos\TreeSizeApp\TreeSizeApp\icons\file.png"
+                        Icon = @"/icons/file.png"
                     };
                     file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
                     foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
