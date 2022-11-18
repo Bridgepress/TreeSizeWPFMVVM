@@ -8,7 +8,7 @@ namespace TreeSize.Handler
         public string? Icon { get; set; }
         public string? Name { get; set; }
         public CountFoldersAndBytesAndFiles CountFoldersAndBytesAndFiles { get; set; } = new CountFoldersAndBytesAndFiles();
-        public long? FreeSpace { get; set; }
+        public long FreeSpace { get; set; }
         public DateTime? LastWriteTime { get; set; }
         public ObservableCollection<Node> Nodes { get; set; }
         public bool IsSelected { get; set; }

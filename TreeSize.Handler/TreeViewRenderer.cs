@@ -5,11 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
+using TreeSize.Handler.Interfaces;
 
 namespace TreeSize.Handler
 {
     public class TreeViewRenderer
     {
+        private MainThreadDispatcher _mainThreadDispatcher = new MainThreadDispatcher();
+
         public ObservableCollection<Node> RefreshNodes()
         {
             ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
@@ -46,10 +50,7 @@ namespace TreeSize.Handler
                         {
                             folder.CountFoldersAndBytesAndFiles.Bytes += 0;
                         }
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            disk.Nodes.Add(folder);
-                        });
+                        _mainThreadDispatcher.Dispatch(new Action(() => disk.Nodes.Add(folder)));
                     }));
                 }
 
@@ -94,30 +95,44 @@ namespace TreeSize.Handler
                     {
                         folder.CountFoldersAndBytesAndFiles.Bytes += 0;
                     }
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        node.Nodes.Add(folder);
-                    });
+                    _mainThreadDispatcher.Dispatch(new Action(() => node.Nodes.Add(folder)));
                 }
 
-                foreach (FileInfo fi in directory.GetFiles())
-                {
-                    Node file = new Node
-                    {
-                        Name = fi.Name,
-                        Icon = @"/icons/file.png"
-                    };
-                    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
-                    foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
-                    foldersAndBytesAndFilesInFolder.Files++;
-                    node.Nodes.Add(file);
-                }
+                AddFilesToNode(directory, node, foldersAndBytesAndFilesInFolder);
+                //foreach (FileInfo fi in directory.GetFiles())
+                //{
+                //    Node file = new Node
+                //    {
+                //        Name = fi.Name,
+                //        Icon = @"/icons/file.png"
+                //    };
+                //    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
+                //    foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
+                //    foldersAndBytesAndFilesInFolder.Files++;
+                //    node.Nodes.Add(file);
+                //}
             }
             catch (UnauthorizedAccessException)
             {
             }
 
             return foldersAndBytesAndFilesInFolder;
+        }
+
+        private void AddFilesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder)
+        {
+            foreach (FileInfo fi in directory.GetFiles())
+            {
+                Node file = new Node
+                {
+                    Name = fi.Name,
+                    Icon = @"/icons/file.png"
+                };
+                file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
+                foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
+                foldersAndBytesAndFilesInFolder.Files++;
+                node.Nodes.Add(file);
+            }
         }
 
         private List<DriveInfo> GetDrives()
