@@ -8,40 +8,18 @@ namespace TreeSize.Handler
         public string? Icon { get; set; }
         public string? Name { get; set; }
         public CountFoldersAndBytesAndFiles CountFoldersAndBytesAndFiles { get; set; } = new CountFoldersAndBytesAndFiles();
-        public long FreeSpace { get; set; }
+        public long FreeSpace { get; set; } = 0;
         public DateTime? LastWriteTime { get; set; }
-        public ObservableCollection<Node> Nodes { get; set; }
+        public ObservableCollection<Node> Nodes { get; set; } = new ObservableCollection<Node>();
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }
-        public string GetSize
+        public string GetStandartSize
         {
             get
             {
-                string postfix = "Bytes";
-                long result = CountFoldersAndBytesAndFiles.Bytes;
-                if (CountFoldersAndBytesAndFiles.Bytes >= 1073741824)
-                {
-                    result = CountFoldersAndBytesAndFiles.Bytes / 1073741824;
-                    postfix = "GB";
-                }
-                else if (CountFoldersAndBytesAndFiles.Bytes >= 1048576)
-                {
-                    result = CountFoldersAndBytesAndFiles.Bytes / 1048576;
-                    postfix = "MB";
-                }
-                else if (CountFoldersAndBytesAndFiles.Bytes >= 1024)
-                {
-                    result = CountFoldersAndBytesAndFiles.Bytes / 1024;
-                    postfix = "KB";
-                }
-
-                return result.ToString("F1") + " " + postfix;
+                return ByteConverter.Standart(CountFoldersAndBytesAndFiles.Bytes);
             }
         }
 
-        public Node()
-        {
-            Nodes = new ObservableCollection<Node>();
-        }
     }
 }

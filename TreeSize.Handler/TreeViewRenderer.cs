@@ -4,9 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Xml.Linq;
-using TreeSize.Handler.Interfaces;
 
 namespace TreeSize.Handler
 {
@@ -26,7 +23,6 @@ namespace TreeSize.Handler
                     FreeSpace = drive.TotalFreeSpace,
                     Icon = @"/icons/drive.png"
                 };
-                disk.CountFoldersAndBytesAndFiles.Bytes = drive.TotalSize;
                 _nodes.Add(disk);
 
                 foreach (DirectoryInfo directory in drive.RootDirectory.GetDirectories()
@@ -40,32 +36,16 @@ namespace TreeSize.Handler
                             Name = directory.Name,
                             Icon = @"/icons/folder.png"
                         };
-                        try
-                        {
-                            folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
-                            disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
-                            disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
-                        }
-                        catch (Exception)
-                        {
-                            folder.CountFoldersAndBytesAndFiles.Bytes += 0;
-                        }
+                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
+                        disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                        disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
+                        disk.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
                         _mainThreadDispatcher.Dispatch(new Action(() => disk.Nodes.Add(folder)));
                     }));
                 }
 
-                foreach (FileInfo fi in drive.RootDirectory.GetFiles()
-                        .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToArray())
-                {
-                    Node file = new Node
-                    {
-                        Name = fi.Name,
-                        Icon = @"/icons/file.png"
-                    };
-                    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
-                    disk.CountFoldersAndBytesAndFiles.Files++;
-                    disk.Nodes.Add(file);
-                }
+                AddFilesToNode(drive.RootDirectory.GetFiles()
+                   .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToList(), disk, disk.CountFoldersAndBytesAndFiles);
             }
 
             return _nodes;
@@ -74,6 +54,13 @@ namespace TreeSize.Handler
         private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
         {
             CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
+            AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
+            AddFilesToNode(directory.GetFiles().ToList(), node, foldersAndBytesAndFilesInFolder);
+            return foldersAndBytesAndFilesInFolder;
+        }
+
+        private void AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
+        {
             try
             {
                 foreach (DirectoryInfo di in directory.GetDirectories().Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
@@ -97,41 +84,31 @@ namespace TreeSize.Handler
                     }
                     _mainThreadDispatcher.Dispatch(new Action(() => node.Nodes.Add(folder)));
                 }
-
-                AddFilesToNode(directory, node, foldersAndBytesAndFilesInFolder);
-                //foreach (FileInfo fi in directory.GetFiles())
-                //{
-                //    Node file = new Node
-                //    {
-                //        Name = fi.Name,
-                //        Icon = @"/icons/file.png"
-                //    };
-                //    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
-                //    foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
-                //    foldersAndBytesAndFilesInFolder.Files++;
-                //    node.Nodes.Add(file);
-                //}
             }
             catch (UnauthorizedAccessException)
             {
             }
-
-            return foldersAndBytesAndFilesInFolder;
         }
 
-        private void AddFilesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder)
+        private void AddFilesToNode(List<FileInfo> directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder)
         {
-            foreach (FileInfo fi in directory.GetFiles())
+            try
             {
-                Node file = new Node
+                foreach (FileInfo fi in directory)
                 {
-                    Name = fi.Name,
-                    Icon = @"/icons/file.png"
-                };
-                file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
-                foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
-                foldersAndBytesAndFilesInFolder.Files++;
-                node.Nodes.Add(file);
+                    Node file = new Node
+                    {
+                        Name = fi.Name,
+                        Icon = @"/icons/file.png"
+                    };
+                    file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
+                    foldersAndBytesAndFilesInFolder.Bytes += fi.Length;
+                    foldersAndBytesAndFilesInFolder.Files++;
+                    node.Nodes.Add(file);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
         }
 
