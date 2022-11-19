@@ -34,8 +34,7 @@ namespace TreeSize.Handler
                 {
                     ConvertNode(kindsSize, item);
                 });
-            }
-            
+            }  
         }
 
         private void ConvertNode(KindsSizes kindsSize, Node nodes)
