@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TreeSize.Handler.Nodes;
 
 namespace TreeSize.Handler
 {
@@ -17,11 +18,10 @@ namespace TreeSize.Handler
 
             foreach (DriveInfo drive in GetDrives())
             {
-                Node disk = new Node
+                DriveNode disk = new DriveNode(drive)
                 {
                     Name = drive.Name,
                     FreeSpace = drive.TotalFreeSpace,
-                    Icon = @"/icons/drive.png"
                 };
                 _nodes.Add(disk);
 
@@ -31,10 +31,9 @@ namespace TreeSize.Handler
                     disk.CountFoldersAndBytesAndFiles.Folders++;
                     Task.Run(new Action(() =>
                     {
-                        Node folder = new Node()
+                        FolderNode folder = new FolderNode(directory)
                         {
                             Name = directory.Name,
-                            Icon = @"/icons/folder.png"
                         };
                         folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
                         disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
@@ -66,10 +65,9 @@ namespace TreeSize.Handler
                 foreach (DirectoryInfo di in directory.GetDirectories().Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
                 {
                     foldersAndBytesAndFilesInFolder.Folders++;
-                    Node folder = new Node()
+                    FolderNode folder = new FolderNode(di)
                     {
                         Name = di.Name,
-                        Icon = @"/icons/folder.png"
                     };
                     try
                     {
@@ -96,10 +94,9 @@ namespace TreeSize.Handler
             {
                 foreach (FileInfo fi in directory)
                 {
-                    Node file = new Node
+                    FileNode file = new FileNode(fi)
                     {
                         Name = fi.Name,
-                        Icon = @"/icons/file.png"
                     };
                     file.CountFoldersAndBytesAndFiles.Bytes += fi.Length;
                     foldersAndBytesAndFilesInFolder.Bytes += fi.Length;

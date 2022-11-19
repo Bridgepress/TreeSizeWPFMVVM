@@ -1,13 +1,15 @@
 ﻿using System.IO;
 
-namespace TreeSize.Handler
+namespace TreeSize.Handler.Nodes
 {
     public class FileNode : Node
     {
         public FileInfo FileInfo { get; set; }
+
         public FileNode(FileInfo fileInfo)
         {
             FileInfo = fileInfo;
+            Icon = IconPath.File;
         }
     }
 }

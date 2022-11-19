@@ -2,14 +2,19 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using TreeSize.Handler;
+using TreeSize.Handler.Nodes;
+using TreeSizeApp.RelayCommand;
 
 namespace TreeSizeApp.ViewModels
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
+        private ConverterNodeToSelectTypeSize _converterNodeToSelectTypeSize = new ConverterNodeToSelectTypeSize();
         public event PropertyChangedEventHandler PropertyChanged;
         private DispatcherTimer _dispatcherTimer = new DispatcherTimer();
         private ObservableCollection<Node> _nodes;
@@ -59,6 +64,62 @@ namespace TreeSizeApp.ViewModels
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
             TreeSize.Items.Refresh();
+        }
+
+        private RellayCommand _refrashCommand;
+        public RellayCommand RefrashCommand
+        {
+            get
+            {
+                return _refrashCommand ??
+                (_refrashCommand = new RellayCommand(obj =>
+                {
+                    Nodes = _treeViewRenderer.RefreshNodes();
+                    TreeSize.ItemsSource = Nodes;
+                }));
+            }
+        }
+
+        private RellayCommand _convertMbCommand;
+        public RellayCommand ConvertMbCommand
+        {
+            get
+            {
+                return _convertMbCommand ??
+                (_refrashCommand = new RellayCommand(obj =>
+                {
+                    _converterNodeToSelectTypeSize.Convert(KindsSizes.MB, _nodes);
+                    TreeSize.ItemsSource = Nodes;
+                }));
+            }
+        }
+
+        private RellayCommand _refrashConvertGb;
+        public RellayCommand RefrashConvertGb
+        {
+            get
+            {
+                return _refrashCommand ??
+                (_refrashCommand = new RellayCommand(obj =>
+                {
+                    Nodes = _treeViewRenderer.RefreshNodes();
+                    TreeSize.ItemsSource = Nodes;
+                }));
+            }
+        }
+
+        private RellayCommand _refrashConvertKb;
+        public RellayCommand RefrashConvertKb
+        {
+            get
+            {
+                return _refrashCommand ??
+                (_refrashCommand = new RellayCommand(obj =>
+                {
+                    Nodes = _treeViewRenderer.RefreshNodes();
+                    TreeSize.ItemsSource = Nodes;
+                }));
+            }
         }
     }
 }

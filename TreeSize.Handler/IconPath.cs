@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace TreeSize.Handler
 {
-    public struct IconPath
+    public static class IconPath
     {
-        public string Folder = @"/icons/folder.png";
-
-        public IconPath()
-        {
-        }
+        public const string Folder = @"/icons/folder.png";
+        public const string File = @"/icons/file.png";
+        public const string Drive = @"/icons/drive.png";
     }
 }

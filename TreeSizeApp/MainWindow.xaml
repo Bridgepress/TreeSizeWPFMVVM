@@ -1,14 +1,37 @@
-﻿<Window x:Class="TreeSizeApp.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TreeSizeApp"
-         xmlns:local2="clr-namespace:TreeSize.Handler;assembly=TreeSize.Handler"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+﻿<Fluent:RibbonWindow x:Class="TreeSizeApp.MyFirstWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:Fluent="urn:fluent-ribbon"
+                     Title="My first RibbonWindow" 
+                     Width="800" 
+                     Height="600">
 
-    <DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Fluent:Ribbon Grid.Row="0">
+            <!--Backstage-->
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+
+            <!--Tabs-->
+            <Fluent:RibbonTabItem Header="Home">
+                <Fluent:RibbonGroupBox Header="Group">
+                    <Fluent:Button Header="Refrsh" Command="{Binding RefrashCommand}"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Group">
+                    <Fluent:Button Header="MB" Command="{Binding ConvertMbCommand}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+
+        <Grid Grid.Row="1">
+            <DockPanel>
         <DataGrid Height="25" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" AutoGenerateColumns="False" Margin="0,0,0,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="200" Header="Name" x:Name="col0"></DataGridTextColumn>
@@ -18,7 +41,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TreeView  x:Name="treeView" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}">
+                <TreeView  x:Name="treeView" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" >
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -56,4 +79,6 @@
             </TreeView.ItemTemplate>
         </TreeView>
     </DockPanel>
-</Window>
+        </Grid>
+    </Grid>
+</Fluent:RibbonWindow>

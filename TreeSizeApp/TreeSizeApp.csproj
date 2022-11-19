@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fluent.Ribbon" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="icons\drive.png" />
     <Resource Include="icons\file.png" />
     <Resource Include="icons\folder.png" />

@@ -8,27 +8,37 @@ namespace TreeSize.Handler
 {
     public static class ByteConverter
     {
-        public static string Standart(long bytes)
+        public static string GB(long bytes)
         {
-            string postfix = "Bytes";
+            string postfix = KindsSizes.Bites.ToString();
             long result = bytes;
             if (bytes >= 1073741824)
             {
                 result = bytes / 1073741824;
-                postfix = "GB";
+                postfix = KindsSizes.GB.ToString();
             }
             else if (bytes >= 1048576)
             {
                 result = bytes / 1048576;
-                postfix = "MB";
+                postfix = KindsSizes.MB.ToString();
             }
             else if (bytes >= 1024)
             {
                 result = bytes / 1024;
-                postfix = "KB";
+                postfix = KindsSizes.KB.ToString();
             }
 
             return result.ToString("F1") + " " + postfix;
+        }
+
+        public static string KB(long bytes)
+        {
+            return (bytes / 1024).ToString();
+        }
+
+        public static string MB(long bytes)
+        {
+            return (bytes / 1024 / 1024).ToString();
         }
     }
 }

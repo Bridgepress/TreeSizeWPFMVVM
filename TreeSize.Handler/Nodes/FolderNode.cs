@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TreeSize.Handler
+namespace TreeSize.Handler.Nodes
 {
     public class FolderNode : Node
     {
@@ -14,6 +14,7 @@ namespace TreeSize.Handler
         public FolderNode(DirectoryInfo directoryInfo)
         {
             DirectoryInfo = directoryInfo;
+            Icon = IconPath.Folder;
         }
     }
 }

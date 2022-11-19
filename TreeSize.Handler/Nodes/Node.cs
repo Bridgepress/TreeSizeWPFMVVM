@@ -1,7 +1,9 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Forms;
 
-namespace TreeSize.Handler
+namespace TreeSize.Handler.Nodes
 {
     public class Node
     {
@@ -13,13 +15,20 @@ namespace TreeSize.Handler
         public ObservableCollection<Node> Nodes { get; set; } = new ObservableCollection<Node>();
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }
-        public string GetStandartSize
+        public string GetSize
         {
             get
             {
-                return ByteConverter.Standart(CountFoldersAndBytesAndFiles.Bytes);
+                if (GetSize == "")
+                {
+                    GetSize = ByteConverter.GB(CountFoldersAndBytesAndFiles.Bytes);
+                }
+                return GetSize;
+            }
+            set
+            {
+                GetSize = value;
             }
         }
-
     }
 }
