@@ -86,7 +86,7 @@ namespace TreeSizeApp.ViewModels
             get
             {
                 return _convertMbCommand ??
-                (_refrashCommand = new RellayCommand(obj =>
+                (_convertMbCommand = new RellayCommand(obj =>
                 {
                     _converterNodeToSelectTypeSize.Convert(KindsSizes.MB, _nodes);
                     TreeSize.ItemsSource = Nodes;
@@ -94,29 +94,29 @@ namespace TreeSizeApp.ViewModels
             }
         }
 
-        private RellayCommand _refrashConvertGb;
-        public RellayCommand RefrashConvertGb
+        private RellayCommand _convertGbCommand;
+        public RellayCommand ConvertGbCommand
         {
             get
             {
-                return _refrashCommand ??
-                (_refrashCommand = new RellayCommand(obj =>
+                return _convertGbCommand ??
+                (_convertGbCommand = new RellayCommand(obj =>
                 {
-                    Nodes = _treeViewRenderer.RefreshNodes();
+                    _converterNodeToSelectTypeSize.Convert(KindsSizes.GB, _nodes);
                     TreeSize.ItemsSource = Nodes;
                 }));
             }
         }
 
-        private RellayCommand _refrashConvertKb;
-        public RellayCommand RefrashConvertKb
+        private RellayCommand _convertKbCommand;
+        public RellayCommand ConvertKbCommand
         {
             get
             {
-                return _refrashCommand ??
-                (_refrashCommand = new RellayCommand(obj =>
+                return _convertKbCommand ??
+                (_convertKbCommand = new RellayCommand(obj =>
                 {
-                    Nodes = _treeViewRenderer.RefreshNodes();
+                    _converterNodeToSelectTypeSize.Convert(KindsSizes.KB, _nodes);
                     TreeSize.ItemsSource = Nodes;
                 }));
             }

@@ -40,6 +40,7 @@ namespace TreeSize.Handler
                         disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         disk.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
                         _mainThreadDispatcher.Dispatch(new Action(() => disk.Nodes.Add(folder)));
+                        disk.GetSize = ByteConverter.GB(disk.CountFoldersAndBytesAndFiles.Bytes);
                     }));
                 }
 

@@ -15,19 +15,20 @@ namespace TreeSize.Handler.Nodes
         public ObservableCollection<Node> Nodes { get; set; } = new ObservableCollection<Node>();
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }
+        private string _getSize;
         public string GetSize
         {
             get
             {
-                if (GetSize == "")
+                if (String.IsNullOrEmpty(_getSize))
                 {
-                    GetSize = ByteConverter.GB(CountFoldersAndBytesAndFiles.Bytes);
+                    _getSize = ByteConverter.GB(CountFoldersAndBytesAndFiles.Bytes);
                 }
-                return GetSize;
+                return _getSize;
             }
             set
             {
-                GetSize = value;
+                _getSize = value;
             }
         }
     }

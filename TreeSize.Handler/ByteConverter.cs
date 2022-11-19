@@ -33,12 +33,12 @@ namespace TreeSize.Handler
 
         public static string KB(long bytes)
         {
-            return (bytes / 1024).ToString();
+            return ((double)bytes / (double)1024).ToString()+" "+KindsSizes.KB.ToString();
         }
 
         public static string MB(long bytes)
         {
-            return (bytes / 1024 / 1024).ToString();
+            return ((double)bytes / (double)1024 / (double)1024).ToString("0.###") + " " + KindsSizes.MB.ToString();
         }
     }
 }

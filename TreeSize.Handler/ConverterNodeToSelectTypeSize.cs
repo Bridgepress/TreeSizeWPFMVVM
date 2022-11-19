@@ -29,6 +29,7 @@ namespace TreeSize.Handler
         {
             foreach (var item in node.ToList())
             {
+                item.GetSize = _calculate[kindsSize](item.CountFoldersAndBytesAndFiles.Bytes);
                 Task.Run(() =>
                 {
                     ConvertNode(kindsSize, item);
