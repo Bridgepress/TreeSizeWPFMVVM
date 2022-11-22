@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TreeSize.Handler.Extensions;
 using TreeSize.Handler.Nodes;
 
@@ -16,20 +17,14 @@ namespace TreeSize.Handler
         public ObservableCollection<Node> RefreshNodes()
         {
             ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
+            List<DriveNode> drives = AddDriveToNode(_nodes);
 
-            foreach (DriveInfo drive in GetDrives())
+            foreach (DriveNode drive in drives)
             {
-                DriveNode disk = new DriveNode(drive)
-                {
-                    Name = drive.Name,
-                    FreeSpace = drive.TotalFreeSpace,
-                };
-                _nodes.Add(disk);
-
-                foreach (DirectoryInfo directory in drive.RootDirectory.GetDirectories()
+                foreach (DirectoryInfo directory in drive.DriveInfo.RootDirectory.GetDirectories()
                     .Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
                 {
-                    disk.CountFoldersAndBytesAndFiles.Folders++;
+                    drive.CountFoldersAndBytesAndFiles.Folders++;
                     Task.Run(new Action(() =>
                     {
                         FolderNode folder = new FolderNode(directory)
@@ -37,16 +32,16 @@ namespace TreeSize.Handler
                             Name = directory.Name,
                         };
                         folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
-                        disk.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
-                        disk.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
-                        disk.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
-                        _mainThreadDispatcher.Dispatch(new Action(() => disk.Nodes.Add(folder)));
-                        disk.GetSize = ByteConverter.GB(disk.CountFoldersAndBytesAndFiles.Bytes);
+                        drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                        drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
+                        drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
+                        _mainThreadDispatcher.Dispatch(new Action(() => drive.Nodes.Add(folder)));
+                        drive.GetSize = ByteConverter.GB(drive.CountFoldersAndBytesAndFiles.Bytes);
                     }));
                 }
 
-                AddFilesToNode(drive.RootDirectory.GetFiles()
-                   .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToList(), disk, disk.CountFoldersAndBytesAndFiles);
+                AddFilesToNode(drive.DriveInfo.RootDirectory.GetFiles()
+                   .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToList(), drive, drive.CountFoldersAndBytesAndFiles);
             }
 
             return _nodes;
@@ -111,20 +106,32 @@ namespace TreeSize.Handler
             }
         }
 
-        private List<DriveInfo> GetDrives()
+        private List<DriveNode> AddDriveToNode(ObservableCollection<Node> nodes)
         {
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            List<DriveInfo> newAllDrives = new List<DriveInfo>();
+            DriveInfo[] Drives = DriveInfo.GetDrives();
+            List<DriveInfo> allDrives = new List<DriveInfo>();
+            List<DriveNode> driveNodes = new List<DriveNode>();
 
-            foreach (var driveInfo in allDrives)
+            foreach (var driveInfo in Drives)
             {
                 if (driveInfo.IsReady)
                 {
-                    newAllDrives.Add(driveInfo);
+                    allDrives.Add(driveInfo);
                 }
             }
 
-            return newAllDrives;
+            foreach (DriveInfo drive in allDrives)
+            {
+                DriveNode disk = new DriveNode(drive)
+                {
+                    Name = drive.Name,
+                    FreeSpace = drive.TotalFreeSpace,
+                };
+                driveNodes.Add(disk);
+                nodes.Add(disk);
+            }
+
+            return driveNodes;
         }
     }
 }
