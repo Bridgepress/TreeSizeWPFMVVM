@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TreeSize.Handler
+namespace TreeSize.Handler.Designations
 {
     public static class IconPath
     {

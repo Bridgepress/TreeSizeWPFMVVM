@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSizeApp", "TreeSizeApp\TreeSizeApp.csproj", "{3A190459-7BEC-4677-AA3F-4AC6B325B05A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeSizeApp", "TreeSizeApp\TreeSizeApp.csproj", "{3A190459-7BEC-4677-AA3F-4AC6B325B05A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSize.Handler", "TreeSize.Handler\TreeSize.Handler.csproj", "{5390B250-CDF9-421E-967E-B26AE04691F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeSize.Handler", "TreeSize.Handler\TreeSize.Handler.csproj", "{5390B250-CDF9-421E-967E-B26AE04691F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSize.Handler.Tests", "TreeSize.Handler.Tests\TreeSize.Handler.Tests.csproj", "{CF81739F-9423-47D1-BB1E-2BB185E2884A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5390B250-CDF9-421E-967E-B26AE04691F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5390B250-CDF9-421E-967E-B26AE04691F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5390B250-CDF9-421E-967E-B26AE04691F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF81739F-9423-47D1-BB1E-2BB185E2884A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF81739F-9423-47D1-BB1E-2BB185E2884A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF81739F-9423-47D1-BB1E-2BB185E2884A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF81739F-9423-47D1-BB1E-2BB185E2884A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿namespace TreeSize.Handler
+﻿namespace TreeSize.Handler.Extensions
 {
     public class CountFoldersAndBytesAndFiles
     {

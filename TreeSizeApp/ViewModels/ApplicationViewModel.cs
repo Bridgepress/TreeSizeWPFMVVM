@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TreeSize.Handler;
+using TreeSize.Handler.Designations;
+using TreeSize.Handler.Extensions;
 using TreeSize.Handler.Nodes;
 using TreeSizeApp.RelayCommand;
 

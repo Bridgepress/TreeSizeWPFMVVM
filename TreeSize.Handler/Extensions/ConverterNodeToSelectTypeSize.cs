@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TreeSize.Handler.Designations;
 using TreeSize.Handler.Interfaces;
 using TreeSize.Handler.Nodes;
 
-namespace TreeSize.Handler
+namespace TreeSize.Handler.Extensions
 {
     public class ConverterNodeToSelectTypeSize
     {
@@ -20,8 +21,8 @@ namespace TreeSize.Handler
             _calculate = new Dictionary<KindsSizes, Func<long, string>>
             {
                 {KindsSizes.MB,(bytes) => ByteConverter.MB(bytes)},
-                 {KindsSizes.GB,(bytes) => ByteConverter.GB(bytes)},
-                  {KindsSizes.KB,(bytes) => ByteConverter.KB(bytes)}
+                {KindsSizes.GB,(bytes) => ByteConverter.GB(bytes)},
+                {KindsSizes.KB,(bytes) => ByteConverter.KB(bytes)}
             };
         }
 
@@ -34,7 +35,7 @@ namespace TreeSize.Handler
                 {
                     ConvertNode(kindsSize, item);
                 });
-            }  
+            }
         }
 
         private void ConvertNode(KindsSizes kindsSize, Node nodes)
@@ -42,7 +43,7 @@ namespace TreeSize.Handler
             foreach (Node node in nodes.Nodes)
             {
                 node.GetSize = _calculate[kindsSize](node.CountFoldersAndBytesAndFiles.Bytes);
-                if(node.Nodes.Count > 0)
+                if (node.Nodes.Count > 0)
                 {
                     ConvertNode(kindsSize, node);
                 }

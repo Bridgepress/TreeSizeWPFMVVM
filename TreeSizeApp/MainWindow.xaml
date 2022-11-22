@@ -23,13 +23,13 @@
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox>
                     <Fluent:Button Header="Refrsh" Command="{Binding RefrashCommand}"
-                                   Icon="icons/Refresh.png"/>
+                                   Icon="icons/Refresh.png" Height="64" Width="64" RenderOptions.BitmapScalingMode="Fant"/>
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Kind Size">
-                    <Fluent:Button Header="GB" Foreground="Blue" Command="{Binding ConvertGbCommand}"/>
-                    <Fluent:Button Header="MB" Foreground="Blue" Command="{Binding ConvertMbCommand}"/>
-                    <Fluent:Button Header="KB" Foreground="Blue" Command="{Binding ConvertKbCommand}"/>
+                    <Fluent:Button Header="GB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertGbCommand}"/>
+                    <Fluent:Button Header="MB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertMbCommand}"/>
+                    <Fluent:Button Header="KB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertKbCommand}"/>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
