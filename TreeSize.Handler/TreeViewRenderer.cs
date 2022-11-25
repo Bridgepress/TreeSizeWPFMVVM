@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using TreeSize.Handler.Extensions;
 using TreeSize.Handler.Interfaces;
 using TreeSize.Handler.Nodes;
@@ -34,7 +33,7 @@ namespace TreeSize.Handler
                     .Select(directory => Task.Run(() =>
                     {
                         drive.CountFoldersAndBytesAndFiles.Folders++;
-                        Task.Run(new Action( async () =>
+                        Task.Run(new Action(async () =>
                         {
                             FolderNode folder = new FolderNode(directory)
                             {
@@ -55,7 +54,7 @@ namespace TreeSize.Handler
             return _nodes;
         }
 
-        private async Task <CountFoldersAndBytesAndFiles> LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
+        private async Task<CountFoldersAndBytesAndFiles> LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
         {
             CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
             await AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
