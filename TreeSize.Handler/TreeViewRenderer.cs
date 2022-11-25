@@ -6,56 +6,64 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TreeSize.Handler.Extensions;
+using TreeSize.Handler.Interfaces;
 using TreeSize.Handler.Nodes;
 
 namespace TreeSize.Handler
 {
     public class TreeViewRenderer
     {
-        private MainThreadDispatcher _mainThreadDispatcher = new MainThreadDispatcher();
+        private IFileManager _fileManager;
+        private IMainThreadDispatcher _mainThreadDispatcher;
 
-        public ObservableCollection<Node> RefreshNodes()
+        public TreeViewRenderer(IFileManager fileManager, IMainThreadDispatcher mainThreadDispatcher)
+        {
+            _fileManager = fileManager;
+            _mainThreadDispatcher = mainThreadDispatcher;
+        }
+
+        public async Task<ObservableCollection<Node>> RefreshNodes()
         {
             ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
             List<DriveNode> drives = AddDriveToNode(_nodes);
 
             foreach (DriveNode drive in drives)
             {
-                foreach (DirectoryInfo directory in drive.DriveInfo.RootDirectory.GetDirectories()
-                    .Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
-                {
-                    drive.CountFoldersAndBytesAndFiles.Folders++;
-                    Task.Run(new Action(() =>
+                await Task.WhenAll(drive.DriveInfo.GetDirectories()
+                    .Where(x => (x.Attributes & FileAttributes.Hidden) == 0)
+                    .Select(directory => Task.Run(() =>
                     {
-                        FolderNode folder = new FolderNode(directory)
+                        drive.CountFoldersAndBytesAndFiles.Folders++;
+                        Task.Run(new Action( async () =>
                         {
-                            Name = directory.Name,
-                        };
-                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
-                        drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
-                        drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
-                        drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
-                        _mainThreadDispatcher.Dispatch(new Action(() => drive.Nodes.Add(folder)));
-                        drive.GetSize = ByteConverter.GB(drive.CountFoldersAndBytesAndFiles.Bytes);
-                    }));
-                }
-
-                AddFilesToNode(drive.DriveInfo.RootDirectory.GetFiles()
+                            FolderNode folder = new FolderNode(directory)
+                            {
+                                Name = directory.Name,
+                            };
+                            folder.CountFoldersAndBytesAndFiles = await LoadDirectories(directory, folder, _nodes);
+                            drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                            drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
+                            drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
+                            await _mainThreadDispatcher.DispatchAsync(new Action(() => drive.Nodes.Add(folder)));
+                            drive.GetSize = ByteConverter.GB(drive.CountFoldersAndBytesAndFiles.Bytes);
+                        }));
+                    })));
+                AddFilesToNode(drive.DriveInfo.GetFiles()
                    .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToList(), drive, drive.CountFoldersAndBytesAndFiles);
             }
 
             return _nodes;
         }
 
-        private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
+        private async Task <CountFoldersAndBytesAndFiles> LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
         {
             CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
-            AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
+            await AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
             AddFilesToNode(directory.GetFiles().ToList(), node, foldersAndBytesAndFilesInFolder);
             return foldersAndBytesAndFilesInFolder;
         }
 
-        private void AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
+        private async Task AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
         {
             try
             {
@@ -68,7 +76,7 @@ namespace TreeSize.Handler
                     };
                     try
                     {
-                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(di, folder, root);
+                        folder.CountFoldersAndBytesAndFiles = await LoadDirectories(di, folder, root);
                         foldersAndBytesAndFilesInFolder.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         foldersAndBytesAndFilesInFolder.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
                         foldersAndBytesAndFilesInFolder.Files += folder.CountFoldersAndBytesAndFiles.Files;
@@ -77,7 +85,7 @@ namespace TreeSize.Handler
                     {
                         folder.CountFoldersAndBytesAndFiles.Bytes += 0;
                     }
-                    _mainThreadDispatcher.Dispatch(new Action(() => node.Nodes.Add(folder)));
+                    await _mainThreadDispatcher.DispatchAsync(new Action(() => node.Nodes.Add(folder)));
                 }
             }
             catch (UnauthorizedAccessException)
@@ -108,24 +116,14 @@ namespace TreeSize.Handler
 
         private List<DriveNode> AddDriveToNode(ObservableCollection<Node> nodes)
         {
-            DriveInfo[] Drives = DriveInfo.GetDrives();
-            List<DriveInfo> allDrives = new List<DriveInfo>();
+            DirectoryInfo[] drives = _fileManager.GetDrives();
             List<DriveNode> driveNodes = new List<DriveNode>();
 
-            foreach (var driveInfo in Drives)
-            {
-                if (driveInfo.IsReady)
-                {
-                    allDrives.Add(driveInfo);
-                }
-            }
-
-            foreach (DriveInfo drive in allDrives)
+            foreach (DirectoryInfo drive in drives)
             {
                 DriveNode disk = new DriveNode(drive)
                 {
                     Name = drive.Name,
-                    FreeSpace = drive.TotalFreeSpace,
                 };
                 driveNodes.Add(disk);
                 nodes.Add(disk);

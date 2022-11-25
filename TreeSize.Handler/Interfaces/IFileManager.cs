@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TreeSize.Handler.Interfaces
 {
-    public interface IMainThreadDispatcher
+    public interface IFileManager
     {
-        public Task DispatchAsync(Action action);
+        public DirectoryInfo[] GetDrives();
     }
 }

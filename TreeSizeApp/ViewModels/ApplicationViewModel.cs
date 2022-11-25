@@ -22,16 +22,19 @@ namespace TreeSizeApp.ViewModels
         private ObservableCollection<Node> _nodes;
         private TreeView _treeView = new TreeView();
         private TreeViewRenderer _treeViewRenderer;
+        private FileManager _fileManager = new FileManager();
+        private MainThreadDispatcher _mainThreadDispatcher = new MainThreadDispatcher(); 
 
         public ApplicationViewModel(TreeView treeView)
         {
             _treeView = treeView;
-            _treeViewRenderer = new TreeViewRenderer();
-            _nodes = _treeViewRenderer.RefreshNodes();
+            _treeViewRenderer = new TreeViewRenderer(_fileManager, _mainThreadDispatcher);
+            StartProgram();
             _dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
             _dispatcherTimer.Interval = new TimeSpan(0, 0, 4);
             _dispatcherTimer.Start();
         }
+
         public ObservableCollection<Node> Nodes
         {
             get
@@ -58,6 +61,11 @@ namespace TreeSizeApp.ViewModels
             }
         }
 
+        private async Task StartProgram()
+        {
+            _nodes = await _treeViewRenderer.RefreshNodes();
+        }
+
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
@@ -74,9 +82,9 @@ namespace TreeSizeApp.ViewModels
             get
             {
                 return _refrashCommand ??
-                (_refrashCommand = new RellayCommand(obj =>
+                (_refrashCommand = new RellayCommand(async (obj) =>
                 {
-                    Nodes = _treeViewRenderer.RefreshNodes();
+                    Nodes = await _treeViewRenderer.RefreshNodes();
                     TreeSize.ItemsSource = Nodes;
                 }));
             }

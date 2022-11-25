@@ -10,9 +10,9 @@ namespace TreeSize.Handler.Nodes
 {
     public class DriveNode : Node
     {
-        public DriveInfo DriveInfo { get; set; }
+        public DirectoryInfo DriveInfo { get; set; }
 
-        public DriveNode(DriveInfo driveInfo)
+        public DriveNode(DirectoryInfo driveInfo)
         {
             DriveInfo = driveInfo;
             Icon = IconPath.Drive;
