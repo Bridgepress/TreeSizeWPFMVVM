@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Threading;
 using TreeSize.Handler;
 using TreeSize.Handler.Designations;
@@ -16,14 +15,15 @@ namespace TreeSizeApp.ViewModels
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
-        private ConverterNodeToSelectTypeSize _converterNodeToSelectTypeSize = new ConverterNodeToSelectTypeSize();
         public event PropertyChangedEventHandler PropertyChanged;
+        private ConverterNodeToSelectTypeSize _converterNodeToSelectTypeSize = new ConverterNodeToSelectTypeSize();
         private DispatcherTimer _dispatcherTimer = new DispatcherTimer();
         private ObservableCollection<Node> _nodes;
         private TreeView _treeView = new TreeView();
         private TreeViewRenderer _treeViewRenderer;
         private FileManager _fileManager = new FileManager();
-        private MainThreadDispatcher _mainThreadDispatcher = new MainThreadDispatcher(); 
+        private MainThreadDispatcher _mainThreadDispatcher = new MainThreadDispatcher();
+        private HostedTask _hostedTask = new HostedTask();
 
         public ApplicationViewModel(TreeView treeView)
         {
@@ -63,7 +63,7 @@ namespace TreeSizeApp.ViewModels
 
         private async Task StartProgram()
         {
-            _nodes = await _treeViewRenderer.RefreshNodes();
+            _nodes = await _treeViewRenderer.RefreshNodes(_hostedTask);
         }
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -76,6 +76,19 @@ namespace TreeSizeApp.ViewModels
             TreeSize.Items.Refresh();
         }
 
+        private RellayCommand _stopCommand;
+        public RellayCommand StopCommand
+        {
+            get
+            {
+                return _stopCommand ??
+                (_stopCommand = new RellayCommand(async (obj) =>
+                {
+                    _hostedTask.StopTasks();
+                }));
+            }
+        }
+
         private RellayCommand _refrashCommand;
         public RellayCommand RefrashCommand
         {
@@ -84,7 +97,8 @@ namespace TreeSizeApp.ViewModels
                 return _refrashCommand ??
                 (_refrashCommand = new RellayCommand(async (obj) =>
                 {
-                    Nodes = await _treeViewRenderer.RefreshNodes();
+                    _hostedTask.StartTasks();
+                    Nodes = await _treeViewRenderer.RefreshNodes(_hostedTask);
                     TreeSize.ItemsSource = Nodes;
                 }));
             }

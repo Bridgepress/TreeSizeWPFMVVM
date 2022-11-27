@@ -21,32 +21,32 @@ namespace TreeSize.Handler
             _mainThreadDispatcher = mainThreadDispatcher;
         }
 
-        public async Task<ObservableCollection<Node>> RefreshNodes()
+        public async Task<ObservableCollection<Node>> RefreshNodes(HostedTask hostedTask)
         {
             ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
             List<DriveNode> drives = AddDriveToNode(_nodes);
 
             foreach (DriveNode drive in drives)
             {
-                await Task.WhenAll(drive.DriveInfo.GetDirectories()
-                    .Where(x => (x.Attributes & FileAttributes.Hidden) == 0)
-                    .Select(directory => Task.Run(() =>
+                foreach (DirectoryInfo directory in drive.DriveInfo.GetDirectories()
+                     .Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
+                {
+                    drive.CountFoldersAndBytesAndFiles.Folders++;
+                    hostedTask.Run(new Action(async () =>
                     {
-                        drive.CountFoldersAndBytesAndFiles.Folders++;
-                        Task.Run(new Action(async () =>
+                        FolderNode folder = new FolderNode(directory)
                         {
-                            FolderNode folder = new FolderNode(directory)
-                            {
-                                Name = directory.Name,
-                            };
-                            folder.CountFoldersAndBytesAndFiles = await LoadDirectories(directory, folder, _nodes);
-                            drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
-                            drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
-                            drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
-                            await _mainThreadDispatcher.DispatchAsync(new Action(() => drive.Nodes.Add(folder)));
-                            drive.GetSize = ByteConverter.GB(drive.CountFoldersAndBytesAndFiles.Bytes);
-                        }));
-                    })));
+                            Name = directory.Name,
+                        };
+                        folder.CountFoldersAndBytesAndFiles = await LoadDirectories(directory, folder, _nodes);
+                        drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
+                        drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
+                        drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
+                        _mainThreadDispatcher.Dispatcher(new Action(() => drive.Nodes.Add(folder)));
+                        drive.GetSize = ByteConverter.GB(drive.CountFoldersAndBytesAndFiles.Bytes);
+                    }));
+                }
+
                 AddFilesToNode(drive.DriveInfo.GetFiles()
                    .Where(x => (x.Attributes & FileAttributes.Hidden) == 0).ToList(), drive, drive.CountFoldersAndBytesAndFiles);
             }
@@ -64,6 +64,10 @@ namespace TreeSize.Handler
 
         private async Task AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
         {
+            if (HostedTask.CancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
             try
             {
                 foreach (DirectoryInfo di in directory.GetDirectories().Where(x => (x.Attributes & FileAttributes.Hidden) == 0))
@@ -84,7 +88,7 @@ namespace TreeSize.Handler
                     {
                         folder.CountFoldersAndBytesAndFiles.Bytes += 0;
                     }
-                    await _mainThreadDispatcher.DispatchAsync(new Action(() => node.Nodes.Add(folder)));
+                    _mainThreadDispatcher.Dispatcher(new Action(() => node.Nodes.Add(folder)));
                 }
             }
             catch (UnauthorizedAccessException)

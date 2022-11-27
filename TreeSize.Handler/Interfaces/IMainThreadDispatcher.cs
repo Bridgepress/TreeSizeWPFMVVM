@@ -8,6 +8,6 @@ namespace TreeSize.Handler.Interfaces
 {
     public interface IMainThreadDispatcher
     {
-        public Task DispatchAsync(Action action);
+        public void Dispatcher(Action action);
     }
 }

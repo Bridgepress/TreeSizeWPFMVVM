@@ -12,6 +12,7 @@
     <None Remove="icons\file.png" />
     <None Remove="icons\folder.png" />
     <None Remove="icons\Refresh.png" />
+    <None Remove="icons\stop.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
     <Resource Include="icons\file.png" />
     <Resource Include="icons\folder.png" />
     <Resource Include="icons\Refresh.png" />
+    <Resource Include="icons\stop.png" />
   </ItemGroup>
 
   <ItemGroup>

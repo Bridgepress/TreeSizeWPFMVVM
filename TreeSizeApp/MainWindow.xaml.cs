@@ -16,5 +16,6 @@ namespace TreeSizeApp
             InitializeComponent();
             DataContext = new ApplicationViewModel(treeView);
         }
+
     }
 }

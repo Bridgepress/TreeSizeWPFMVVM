@@ -10,9 +10,9 @@ namespace TreeSize.Handler
 {
     public class MainThreadDispatcher : IMainThreadDispatcher
     {
-        public async Task DispatchAsync(Action action)
+        public void Dispatcher(Action action)
         {
-            await Application.Current.Dispatcher.InvokeAsync(action);
+            Application.Current.Dispatcher.Invoke(action);
         }
     }
 }

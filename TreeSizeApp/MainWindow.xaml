@@ -24,6 +24,8 @@
                 <Fluent:RibbonGroupBox>
                     <Fluent:Button Header="Refrsh" Command="{Binding RefrashCommand}"
                                    Icon="icons/Refresh.png" Height="64" Width="64" RenderOptions.BitmapScalingMode="Fant"/>
+                    <Fluent:Button Header="Stop" Command="{Binding StopCommand}"
+                                   Icon="icons/stop.png" Height="64" Width="64" RenderOptions.BitmapScalingMode="Fant"/>
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Kind Size">
