@@ -12,7 +12,10 @@ namespace TreeSize.Handler
     {
         public void Dispatcher(Action action)
         {
-            Application.Current.Dispatcher.Invoke(action);
+            if (Application.Current != null) 
+            {
+                Application.Current.Dispatcher.Invoke(action);
+            }
         }
     }
 }
