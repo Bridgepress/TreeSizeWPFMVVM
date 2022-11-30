@@ -14,9 +14,9 @@ namespace TreeSize.Handler
 
         public async Task Run(Action action)
         {
-            if (CancellationToken.IsCancellationRequested) 
-            { 
-                return; 
+            if (CancellationToken.IsCancellationRequested)
+            {
+                return;
             }
             var task = Task.Factory.StartNew(action, CancellationToken.Token);
             lock (taskLocker)
