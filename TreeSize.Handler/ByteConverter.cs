@@ -9,23 +9,27 @@ namespace TreeSize.Handler
 {
     public static class ByteConverter
     {
+        private const int _byteInKb = 1024;
+        private const int _byteInMb = 1048576;
+        private const int _byteInGb = 1073741824;
+
         public static string GB(long bytes)
         {
             string postfix = KindsSizes.Bites.ToString();
             long result = bytes;
-            if (bytes >= 1073741824)
+            if (bytes >= _byteInGb)
             {
-                result = bytes / 1073741824;
+                result = bytes / _byteInGb;
                 postfix = KindsSizes.GB.ToString();
             }
-            else if (bytes >= 1048576)
+            else if (bytes >= _byteInMb)
             {
-                result = bytes / 1048576;
+                result = bytes / _byteInMb;
                 postfix = KindsSizes.MB.ToString();
             }
-            else if (bytes >= 1024)
+            else if (bytes >= _byteInKb)
             {
-                result = bytes / 1024;
+                result = bytes / _byteInKb;
                 postfix = KindsSizes.KB.ToString();
             }
 
@@ -34,12 +38,12 @@ namespace TreeSize.Handler
 
         public static string KB(long bytes)
         {
-            return ((double)bytes / (double)1024).ToString()+" "+KindsSizes.KB.ToString();
+            return ((double)bytes / _byteInKb).ToString()+" "+KindsSizes.KB.ToString();
         }
 
         public static string MB(long bytes)
         {
-            return ((double)bytes / (double)1024 / (double)1024).ToString("0.###") + " " + KindsSizes.MB.ToString();
+            return ((double)bytes / _byteInKb / _byteInKb).ToString("0.###") + " " + KindsSizes.MB.ToString();
         }
     }
 }
