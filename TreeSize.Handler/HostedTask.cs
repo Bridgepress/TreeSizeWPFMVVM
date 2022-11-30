@@ -30,6 +30,23 @@ namespace TreeSize.Handler
             }
         }
 
+        public void Wait()
+        {
+            IEnumerable<Task> queueTask;
+            do
+            {
+                lock (taskLocker)
+                {
+                    queueTask = _tasks.Where(t => !t.IsCompleted);
+                }
+
+                if ((queueTask != null) && (queueTask.Count() > 0))
+                {
+                    Task.WhenAll(queueTask).Wait();
+                }
+            } while (queueTask == null);
+        }
+
         public void StopTasks()
         {
             CancellationToken.Cancel();

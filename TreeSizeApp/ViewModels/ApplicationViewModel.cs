@@ -63,7 +63,7 @@ namespace TreeSizeApp.ViewModels
 
         private async Task StartProgram()
         {
-            _nodes = await _treeViewRenderer.RefreshNodes(_hostedTask);
+            _nodes = _treeViewRenderer.RefreshNodes(_hostedTask);
         }
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -98,7 +98,7 @@ namespace TreeSizeApp.ViewModels
                 (_refrashCommand = new RellayCommand(async (obj) =>
                 {
                     _hostedTask.StartTasks();
-                    Nodes = await _treeViewRenderer.RefreshNodes(_hostedTask);
+                    Nodes = _treeViewRenderer.RefreshNodes(_hostedTask);
                     TreeSize.ItemsSource = Nodes;
                 }));
             }

@@ -34,7 +34,8 @@ namespace TreeSize.Handler.Tests
             });
             dispetcherMock.Setup(m => m.Dispatcher(It.IsAny<Action>()));
             TreeViewRenderer treeViewRenderer = new TreeViewRenderer(mock.Object, dispetcherMock.Object);
-            ObservableCollection<Node> nodes = await treeViewRenderer.RefreshNodes(hostedTask);
+            ObservableCollection<Node> nodes = treeViewRenderer.RefreshNodes(hostedTask);
+            hostedTask.Wait();
             Assert.IsTrue(nodes[0].CountFoldersAndBytesAndFiles.Folders == 4);
             Assert.IsTrue(nodes[0].CountFoldersAndBytesAndFiles.Files == 2);
             Assert.IsTrue(nodes[0].CountFoldersAndBytesAndFiles.Bytes == 26);

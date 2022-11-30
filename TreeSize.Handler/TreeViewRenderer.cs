@@ -21,7 +21,7 @@ namespace TreeSize.Handler
             _mainThreadDispatcher = mainThreadDispatcher;
         }
 
-        public async Task<ObservableCollection<Node>> RefreshNodes(HostedTask hostedTask)
+        public ObservableCollection<Node> RefreshNodes(HostedTask hostedTask)
         {
             ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
             List<DriveNode> drives = AddDriveToNode(_nodes);
@@ -38,7 +38,7 @@ namespace TreeSize.Handler
                         {
                             Name = directory.Name,
                         };
-                        folder.CountFoldersAndBytesAndFiles = await LoadDirectories(directory, folder, _nodes);
+                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(directory, folder, _nodes);
                         drive.CountFoldersAndBytesAndFiles.Files += folder.CountFoldersAndBytesAndFiles.Files;
                         drive.CountFoldersAndBytesAndFiles.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         drive.CountFoldersAndBytesAndFiles.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
@@ -54,15 +54,15 @@ namespace TreeSize.Handler
             return _nodes;
         }
 
-        private async Task<CountFoldersAndBytesAndFiles> LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
+        private CountFoldersAndBytesAndFiles LoadDirectories(DirectoryInfo directory, Node node, ObservableCollection<Node> root)
         {
             CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder = new CountFoldersAndBytesAndFiles();
-            await AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
+            AddDirectoriesToNode(directory, node, foldersAndBytesAndFilesInFolder, root);
             AddFilesToNode(directory.GetFiles().ToList(), node, foldersAndBytesAndFilesInFolder);
             return foldersAndBytesAndFilesInFolder;
         }
 
-        private async Task AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
+        private void AddDirectoriesToNode(DirectoryInfo directory, Node node, CountFoldersAndBytesAndFiles foldersAndBytesAndFilesInFolder, ObservableCollection<Node> root)
         {
             if (HostedTask.CancellationToken.IsCancellationRequested)
             {
@@ -79,7 +79,7 @@ namespace TreeSize.Handler
                     };
                     try
                     {
-                        folder.CountFoldersAndBytesAndFiles = await LoadDirectories(di, folder, root);
+                        folder.CountFoldersAndBytesAndFiles = LoadDirectories(di, folder, root);
                         foldersAndBytesAndFilesInFolder.Folders += folder.CountFoldersAndBytesAndFiles.Folders;
                         foldersAndBytesAndFilesInFolder.Bytes += folder.CountFoldersAndBytesAndFiles.Bytes;
                         foldersAndBytesAndFilesInFolder.Files += folder.CountFoldersAndBytesAndFiles.Files;
