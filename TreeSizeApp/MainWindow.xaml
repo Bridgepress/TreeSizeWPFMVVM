@@ -1,0 +1,90 @@
+﻿<Fluent:RibbonWindow x:Class="TreeSizeApp.MyFirstWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:Fluent="urn:fluent-ribbon"
+                     Title="My first RibbonWindow" 
+                     Width="800" 
+                     Height="600">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Fluent:Ribbon Grid.Row="0">
+            <!--Backstage-->
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+
+            <!--Tabs-->
+            <Fluent:RibbonTabItem Header="Home">
+                <Fluent:RibbonGroupBox>
+                    <Fluent:Button Header="Refrsh" Command="{Binding RefrashCommand}"
+                                   Icon="icons/Refresh.png" Height="64" Width="64" RenderOptions.BitmapScalingMode="Fant"/>
+                    <Fluent:Button Header="Stop" Command="{Binding StopCommand}"
+                                   Icon="icons/stop.png" Height="64" Width="64" RenderOptions.BitmapScalingMode="Fant"/>
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="Kind Size">
+                    <Fluent:Button Header="GB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertGbCommand}"/>
+                    <Fluent:Button Header="MB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertMbCommand}"/>
+                    <Fluent:Button Header="KB" Height="64" Width="64" Foreground="Blue" Command="{Binding ConvertKbCommand}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+
+        <Grid Grid.Row="1">
+            <DockPanel>
+        <DataGrid Height="25" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" AutoGenerateColumns="False" Margin="0,0,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="200" Header="Name" x:Name="col0"></DataGridTextColumn>
+                <DataGridTextColumn Width="200" Header="Total Size" x:Name="col1"></DataGridTextColumn>
+                <DataGridTextColumn  Width="200" Header="Files" x:Name="col2"></DataGridTextColumn>
+                <DataGridTextColumn  Width="100" Header="Folders" x:Name="col3"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+                <TreeView  x:Name="treeView" DockPanel.Dock="Top" ItemsSource="{Binding Nodes}" >
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="BorderThickness" Value="4 0 0 1"/>
+                            <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                            <Setter Property="BorderThickness" Value="4 0 0 1 "/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
+                    <Grid  HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0"  VerticalAlignment="Center">
+                            <Image Height="20" Width="20" RenderOptions.BitmapScalingMode="Fant" Source="{Binding Icon}"/>
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                        <TextBlock  Grid.Column="1" Text="{Binding GetSize}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                        <TextBlock  Grid.Column="2" Text="{Binding CountFoldersAndBytesAndFiles.Files}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                        <TextBlock  Grid.Column="3" Text="{Binding CountFoldersAndBytesAndFiles.Folders}"  VerticalAlignment="Center" Margin="50 0 0 0" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </DockPanel>
+        </Grid>
+    </Grid>
+</Fluent:RibbonWindow>
